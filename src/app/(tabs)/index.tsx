@@ -3,7 +3,7 @@ import {StatusBar} from "expo-status-bar";
 import {AntDesign, Ionicons} from "@expo/vector-icons";
 import React, {useState} from "react";
 import FoodListItem from "@/components/food-list-item";
-import {FlatList, TextInput} from "react-native";
+import {Button, FlatList, TextInput} from "react-native";
 
 const FOOD_DATA = [
   {
@@ -26,9 +26,14 @@ const FOOD_DATA = [
 export default function TabOneScreen() {
   const [search, setSearch] = useState<string>('');
 
+  const performSearch = (search: string) => {
+    console.log(search);
+  }
+
   return (
     <View className="flex-1 bg-white">
       <TextInput className={'mx-3 h-10 my-2 bg-[#F6F6F8] pl-4 rounded-md'} value={search} onChangeText={setSearch} placeholder={'Search'} />
+      {search && <Button title={'Search'} onPress={() => performSearch(search)} />}
       <View className={'flex-row items-center justify-between mx-3 mt-2'}>
         <Text className={'text-lg font-semibold'}>Search Results</Text>
         <View className={'flex-row gap-1 border border-1 border-gray-300 rounded-full px-2 items-center' +
