@@ -2,9 +2,9 @@ import React from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {AntDesign, Ionicons} from "@expo/vector-icons";
 
-const FoodListItem = ({item}: {item: any}) => {
+const FoodListItem = ({item: {item}}: {item: any}) => {
   return (
-    <TouchableOpacity activeOpacity={0.7} className="flex flex-row items-center m-2 rounded-md bg-[#F6F6F8] p-2 px-3">
+    <TouchableOpacity activeOpacity={0.7} className="flex flex-row items-center mx-2 rounded-md bg-[#F6F6F8] p-2 px-3">
       <View className={'items-start flex-1 bg-[#F6F6F8]'}>
         <View className={'flex-row items-center gap-1 bg-[#F6F6F8]'}>
           <Text className={'text-lg'}>{item.label}</Text>
