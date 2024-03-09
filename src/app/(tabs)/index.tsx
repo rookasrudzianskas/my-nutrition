@@ -1,88 +1,46 @@
-import { Text, View } from '@/components/Themed';
-import {StatusBar} from "expo-status-bar";
-import {AntDesign, Ionicons} from "@expo/vector-icons";
-import React, {useState} from "react";
-import FoodListItem from "@/components/food-list-item";
-import {ActivityIndicator, Button, FlatList, TextInput} from "react-native";
-import {gql, useLazyQuery, useQuery} from "@apollo/client";
-import dayjs from "dayjs";
+import {Button, FlatList, StyleSheet} from 'react-native';
 
-const FOOD_DATA = [
+import EditScreenInfo from '@/components/EditScreenInfo';
+import { Text, View } from '@/components/Themed';
+import {Link} from "expo-router";
+import FoodListItem from "@/components/food-list-item";
+
+const FOOD_ITEMS = [
   {
-    label: 'Pizza',
-    cal: '234',
-    brand: 'Pizza',
+    food: { label: 'Pizza', nutrients: { ENERC_KCAL: 100 }, brand: 'Dominos' },
   },
   {
-    label: 'Burger',
-    cal: '342',
-    brand: 'Burger',
+    food: { label: 'Pizza', nutrients: { ENERC_KCAL: 100 }, brand: 'Dominos' },
   },
-  {
-    label: 'Chilli Pepers',
-    cal: '343',
-    brand: 'Ch'
-  }
 ]
 
-const query = gql`
-    query search($ingr: String, $upc: String) {
-        search(ingr: $ingr, upc: $upc) {
-            text
-            hints {
-                food {
-                    label
-                    brand
-                    foodId
-                    nutrients {
-                        ENERC_KCAL
-                    }
-                }
-            }
-        }
-    }
-`;
 export default function TabOneScreen() {
-  const [search, setSearch] = useState<string>('');
-  const [runSearch, { data, loading, error }] = useLazyQuery(query);
-
-  const performSearch = (search: string) => {
-    runSearch({ variables: { ingr: search } });
-  }
-
-  if (loading) return <View className={'h-screen flex items-center justify-center'}><ActivityIndicator /></View>;
-  if (error) return <View className={'h-screen flex items-center justify-center'}><Text>Failed to fetch data {error.message}</Text></View>;
-
-  const items = data?.search?.hints || [];
-
-  console.log(data)
-
   return (
-    <View className="flex-1 bg-white">
-      <TextInput className={'mx-3 h-10 my-2 bg-[#F6F6F8] pl-4 rounded-md'} value={search} onChangeText={setSearch} placeholder={'Search'} />
-      {search && <Button title={'Search'} onPress={() => performSearch(search)} />}
-      <View className={'flex-row items-center justify-between mx-3 mt-2'}>
-        <Text className={'text-lg font-semibold'}>Search Results</Text>
-        <View className={'flex-row gap-1 border border-1 border-gray-300 rounded-full px-2 items-center' +
-          ' justify-center'}>
-          <Ionicons className={'mb-4s'} name="shield-checkmark" size={18} color="#6F6E72" />
-          <Text className={'mb-1 text-base'}>Only</Text>
-        </View>
+    <View style={styles.container}>
+      <View className={'flex-row mx-3 items-center justify-between mt-5'}>
+        <Text className={'text-lg text-gray-500 font-semibold'}>Calories</Text>
+        <Text> 1770 - 360 = 1692</Text>
+      </View>
+
+      <View className={'flex-row mx-3 items-center justify-between'}>
+        <Text className={'text-lg text-gray-500 font-semibold'}>Today's food</Text>
+        <Link href="/search" asChild>
+          <Button title="ADD FOOD" />
+        </Link>
       </View>
       <FlatList
-        data={items}
-        renderItem={({ item }) => (
-          <FoodListItem item={item} />
-        )}
-        keyExtractor={(key) => key.brand}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={() => <View className={'h-screen flex items-center justify-center'}><Text>Search a food</Text></View>}
-        contentContainerStyle={{
-          gap: 5,
-          marginTop: 15,
-        }}
+        data={FOOD_ITEMS}
+        contentContainerStyle={{ gap: 5 }}
+        renderItem={({ item }) => <FoodListItem item={item} />}
       />
-      <StatusBar style="auto" />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'white',
+    flex: 1,
+    gap: 10,
+  }
+});
