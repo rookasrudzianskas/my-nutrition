@@ -1,0 +1,3 @@
+curl -X 'GET' \
+  'https://api.edamam.com/api/food-database/v2/parser?app_id=607a6312&app_key=f2f0f0b4ed354eba08bbf85c004845c0%09&ingr=potato&nutrition-type=cooking' \
+  -H 'accept: application/json'
