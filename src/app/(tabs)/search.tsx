@@ -6,6 +6,7 @@ import FoodListItem from "@/components/food-list-item";
 import {ActivityIndicator, Button, FlatList, TextInput} from "react-native";
 import {gql, useLazyQuery, useQuery} from "@apollo/client";
 import dayjs from "dayjs";
+import {Camera} from "expo-camera";
 
 const FOOD_DATA = [
   {
@@ -45,7 +46,10 @@ const query = gql`
 export default function TabTwoScreen() {
   const [search, setSearch] = useState<string>('');
   const [runSearch, { data, loading, error }] = useLazyQuery(query);
+  const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [scannerEnabled, setScannerEnabled] = useState(false);
 
+  requestPermission();
   const performSearch = (search: string) => {
     runSearch({ variables: { ingr: search } });
   }
@@ -55,7 +59,31 @@ export default function TabTwoScreen() {
 
   const items = data?.search?.hints || [];
 
-  // console.log(data)
+  if(scannerEnabled) {
+    return (
+      <View>
+        <Camera
+          style={{ width: '100%', height: '100%' }}
+          onBarCodeScanned={(data) => {
+            console.log(data);
+            runSearch({
+              variables: {
+                upc: data.data
+              }
+            })
+            setScannerEnabled(false);
+          }}
+        />
+        <Ionicons
+          onPress={() => setScannerEnabled(false)}
+          name="close"
+          size={30}
+          color="dimgray"
+          style={{ position: 'absolute', right: 10, top: 10 }}
+        />
+      </View>
+    )
+  }
 
   return (
     <View className="flex-1 bg-white">
@@ -74,7 +102,7 @@ export default function TabTwoScreen() {
         renderItem={({ item }) => (
           <FoodListItem item={item} />
         )}
-        keyExtractor={(key) => key.brand}
+        keyExtractor={(key, i) => i.toString()}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => <View className={'h-screen flex items-center justify-center'}><Text>Search a food</Text></View>}
         contentContainerStyle={{
