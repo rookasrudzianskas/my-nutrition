@@ -3,7 +3,7 @@ import {StatusBar} from "expo-status-bar";
 import {AntDesign, Ionicons} from "@expo/vector-icons";
 import React, {useState} from "react";
 import FoodListItem from "@/components/food-list-item";
-import {ActivityIndicator, Button, FlatList, TextInput} from "react-native";
+import {ActivityIndicator, Button, FlatList, TextInput, TouchableOpacity} from "react-native";
 import {gql, useLazyQuery, useQuery} from "@apollo/client";
 import dayjs from "dayjs";
 import {Camera} from "expo-camera";
@@ -87,7 +87,17 @@ export default function TabTwoScreen() {
 
   return (
     <View className="flex-1 bg-white">
-      <TextInput className={'mx-3 h-10 my-2 bg-[#F6F6F8] pl-4 rounded-md'} value={search} onChangeText={setSearch} placeholder={'Search'} />
+      <View className={'flex flex-row items-center'}>
+        <TextInput className={'mx-3 flex-1 h-10 my-2 bg-[#F6F6F8] pl-4 rounded-md'} value={search} onChangeText={setSearch} placeholder={'Search'} />
+        <TouchableOpacity className={'pr-1'} onPress={() => setScannerEnabled(true)}>
+          <Ionicons
+            name="barcode-outline"
+            size={32}
+            className={''}
+            color="dimgray"
+          />
+        </TouchableOpacity>
+      </View>
       {search && <Button title={'Search'} onPress={() => performSearch(search)} />}
       <View className={'flex-row items-center justify-between mx-3 mt-2'}>
         <Text className={'text-lg font-semibold'}>Search Results</Text>
