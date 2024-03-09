@@ -3,7 +3,9 @@ import {StatusBar} from "expo-status-bar";
 import {AntDesign, Ionicons} from "@expo/vector-icons";
 import React, {useState} from "react";
 import FoodListItem from "@/components/food-list-item";
-import {Button, FlatList, TextInput} from "react-native";
+import {ActivityIndicator, Button, FlatList, TextInput} from "react-native";
+import {gql, useLazyQuery, useQuery} from "@apollo/client";
+import dayjs from "dayjs";
 
 const FOOD_DATA = [
   {
@@ -23,12 +25,37 @@ const FOOD_DATA = [
   }
 ]
 
+const query = gql`
+    query search($ingr: String, $upc: String) {
+        search(ingr: $ingr, upc: $upc) {
+            text
+            hints {
+                food {
+                    label
+                    brand
+                    foodId
+                    nutrients {
+                        ENERC_KCAL
+                    }
+                }
+            }
+        }
+    }
+`;
 export default function TabOneScreen() {
   const [search, setSearch] = useState<string>('');
+  const [runSearch, { data, loading, error }] = useLazyQuery(query);
 
   const performSearch = (search: string) => {
-    console.log(search);
+    runSearch({ variables: { ingr: search } });
   }
+
+  if (loading) return <View className={'h-screen flex items-center justify-center'}><ActivityIndicator /></View>;
+  if (error) return <View className={'h-screen flex items-center justify-center'}><Text>Failed to fetch data {error.message}</Text></View>;
+
+  const items = data?.search?.hints || [];
+
+  console.log(data)
 
   return (
     <View className="flex-1 bg-white">
@@ -43,12 +70,13 @@ export default function TabOneScreen() {
         </View>
       </View>
       <FlatList
-        data={FOOD_DATA}
-        renderItem={(data) => (
-          <FoodListItem item={data} />
+        data={items}
+        renderItem={({ item }) => (
+          <FoodListItem item={item} />
         )}
         keyExtractor={(key) => key.brand}
         showsVerticalScrollIndicator={false}
+        ListEmptyComponent={() => <View className={'h-screen flex items-center justify-center'}><Text>Search a food</Text></View>}
         contentContainerStyle={{
           gap: 5,
           marginTop: 15,

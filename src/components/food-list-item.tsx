@@ -2,15 +2,15 @@ import React from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import {AntDesign, Ionicons} from "@expo/vector-icons";
 
-const FoodListItem = ({item: {item}}: {item: any}) => {
+const FoodListItem = ({item}: {item: any}) => {
   return (
     <TouchableOpacity activeOpacity={0.7} className="flex flex-row items-center mx-2 rounded-md bg-[#F6F6F8] p-2 px-3">
       <View className={'items-start flex-1 bg-[#F6F6F8]'}>
         <View className={'flex-row items-center gap-1 bg-[#F6F6F8]'}>
-          <Text className={'text-lg'}>{item.label}</Text>
+          <Text className={'text-lg'}>{item?.food?.label}</Text>
           <Ionicons name="shield-checkmark" size={19} color="#08D472" />
         </View>
-        <Text className={'text-[#6F6E72]'}>{item.cal} cal, 1 slice, {item.brand}</Text>
+        <Text className={'text-[#6F6E72]'}>{item?.food?.nutrients?.ENERC_KCAL} cal, 1 slice, {item?.food?.brand}</Text>
       </View>
       <View className={'bg-[#F6F6F8]'}>
         <TouchableOpacity activeOpacity={0.7} className={'bg-gray-200 rounded-full h-10 w-10 items-center' +
